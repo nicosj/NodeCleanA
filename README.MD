@@ -1,4 +1,8 @@
 # NODE Clean Architecture
+
+<img src="https://www.muylinux.com/wp-content/uploads/2022/04/nodejs.png" style="max-width:250px">
+<img src="https://jwt.io/img/logo-asset.svg" style="max-width:300px">
+
 ## Description
 This is a simple example of a clean architecture for a node application. It is based on the following principles:
 - **Separation of concerns**: Each layer has a single responsibility.
