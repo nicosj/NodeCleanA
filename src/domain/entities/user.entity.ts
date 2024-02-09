@@ -1,5 +1,5 @@
 
-export  class UserEntity{
+export  class UserEntity  {
     constructor(
         public id: string,
         public name: string,
@@ -7,13 +7,15 @@ export  class UserEntity{
         public password: string,
         public role: string,
         public img?: string,
-        public bio?: string,
-        public avatar_url?: string,
-        public html_url?: string,
-        public public_repos?: number,
+
         )
     {
 
     }
+    static userEntityFromObject(object: {[key: string]: any}): UserEntity{
+        const {id, name, email, password, role, img, bio, avatar_url, html_url, public_repos} = object;
+        return new UserEntity(id, name, email, password, role, img);
+    }
+
 
 }

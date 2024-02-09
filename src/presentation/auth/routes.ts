@@ -6,7 +6,7 @@ import {AuthMiddleware} from "../middleware/auth.middleware";
 export class AuthRoutes {
     static  get  routes():Router {
         const router = Router();
-        const datasource = new AuthDatasourceImpl();
+        const datasource = new AuthDatasourceImpl( );
         const authRepository = new AuthRepositoryImpl(datasource);
         const controller = new AuthController(authRepository);
 

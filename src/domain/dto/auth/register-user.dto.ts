@@ -7,15 +7,15 @@ export class RegisterUserDto{
         public password: string,
         public role?: string,
         public img?: string,
-        public bio?: string,
+        /*public bio?: string,
         public avatar_url?: string,
         public html_url?: string,
-        public public_repos?: number,
+        public public_repos?: number,*/
         )
     {}
 
     static create(object:{[key:string]:any}):[string?, RegisterUserDto?] {
-        const {name, email, password, role, img, bio, avatar_url, html_url, public_repos} = object;
+        const {name, email, password, role, img} = object;
 
         if(!name) return ['name is required'];
         if(!email) return ['email is required'];
@@ -33,10 +33,10 @@ export class RegisterUserDto{
                         password,
                         role,
                         img,
-                        bio,
+                        /*bio,
                         avatar_url,
                         html_url,
-                        public_repos,
+                        public_repos,*/
                 )
 
             ];

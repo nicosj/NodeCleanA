@@ -1,28 +1,33 @@
 import {AuthDatasource, CustomErrors, LoginUserDto, RegisterUserDto, UserEntity} from "../../domain/";
-import {UserModel} from "../../data";
 import {BcryptAdapter} from "../../config";
 import {UserMapper} from "../mappers/user.mapper";
+import {AppDataSourcex, User} from "../../data";
+
 
 type hashFunction = (password: string) => string;
 type compareFunction = (password: string, hashedPassword: string) => boolean;
 export class AuthDatasourceImpl implements AuthDatasource {
-    //private readonly _userRepository: Repository<UserEntity>;
+    private readonly _authRepository  =AppDataSourcex.getRepository(User);
+
+
 
     constructor(
+
     private readonly hashPassword: hashFunction=BcryptAdapter.hash,
     private readonly comparePassword: compareFunction=BcryptAdapter.compare,
-    ) {
+    ) {}
 
-    }
-
-    async loginUser(loginUserDto:LoginUserDto): Promise<UserEntity> {
-        const {name, email, password} = loginUserDto;
+    async loginUser(loginUserDto:LoginUserDto): Promise<UserEntity > {
+        const { email, password} = loginUserDto;
         try{
-            const exists=await UserModel.findOne({email }|| {name});
+
+            const exists= await this._authRepository.findOne({where: {email: email}});
             if(!exists)throw CustomErrors.conflict('credenciales no son correctas');
             const isPasswordValid=await this.comparePassword(password, exists.password);
             if(!isPasswordValid)throw CustomErrors.conflict('credenciales no son correctas');
+
             return UserMapper.userEntityFromLoginObject(exists);
+
 
         }
         catch(e){
@@ -37,15 +42,15 @@ export class AuthDatasourceImpl implements AuthDatasource {
 
     async registerUser(registerUserDto: RegisterUserDto): Promise<UserEntity> {
         const {name, email, password} = registerUserDto;
+
         try{
-            const exists=await UserModel.findOne({email});
-            if(exists)throw CustomErrors.conflict('credenciales no son correctas');
-            const user=await UserModel.create({
+            const exists=await this._authRepository.findOne({where: {email}});
+            if(exists)throw CustomErrors.conflict('email no valido');
+            let user=await this._authRepository.save({
                 name:name,
                 email:email,
                 password: this.hashPassword(password)
             });
-            await user.save();
             return  UserMapper.userEntityFromObject(user);
 
         }
@@ -56,15 +61,6 @@ export class AuthDatasourceImpl implements AuthDatasource {
             console.log(e)
             throw CustomErrors.internalServerError()
         }
-
-
     }
 
-    /*async findUserByEmail(email: string): Promise<UserEntity | undefined> {
-        return this._userRepository.findOne({ email });
-    }
-
-    async findUserById(id: number): Promise<UserEntity | undefined> {
-        return this._userRepository.findOne(id);
-    }*/
 }
